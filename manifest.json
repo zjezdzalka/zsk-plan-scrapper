@@ -1,0 +1,10 @@
+{
+    "manifest_version": 3,
+    "name": "ZSK Scrapper",
+    "description": "Teacher Timetable Scrapper",
+    "version": "1.0",
+    "action": {
+      "default_popup": "scrap.html",
+      "default_icon": "majc.png"
+    }
+  }
