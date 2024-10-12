@@ -8,10 +8,14 @@
     "default_icon": "majc.png"
   },
   "background":{
-    "service_worker": "../background.js",
+    "service_worker": "background.js",
     "type": "module" 
   },
   "permissions":[
     "storage"
+  ],
+  "host_permissions":[
+    "https://*/*",
+    "http://*/*"
   ]
 }
