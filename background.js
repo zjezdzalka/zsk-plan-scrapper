@@ -8,7 +8,7 @@ async function getMain(){
     return data;
 }
 
-async function getPlans(i){
+async function getPlans(i, port, amount){
     let url = `http://thingproxy.freeboard.io/fetch/https://www.zsk.poznan.pl/plany_lekcji/2023plany/technikum/plany/o${i}.html)`;
     console.log(url);
     let data = await fetch(url)
@@ -17,6 +17,7 @@ async function getPlans(i){
     chrome.storage.local.set({ [i]: data }).then(() => {
         console.log("Value "+i+" is set.");
     });
+    port.postMessage({name:"text-update", text: `${i}/${amount} planów.`})
     return data;
 }
 
@@ -25,11 +26,12 @@ chrome.runtime.onConnect.addListener(function(port) {
     port.onMessage.addListener(async function(msg) {
         if (msg.request === "run-data"){
             let text="Successful.";
-            await getPlans(msg.i);
-            console.log("finished uploading plan "+msg.i+".");
-            if(msg.i == msg.amount){
-                port.postMessage({name:"values", text: text});
+            for(let i = 1; i <= msg.amount; i++){
+                await getPlans(i, port, msg.amount);
             }
+            console.log("finished uploading.");
+            
+            port.postMessage({name:"values", text: text});
         }
         else if (msg.request === "run"){
             let value = await getMain();

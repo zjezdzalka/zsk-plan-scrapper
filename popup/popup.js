@@ -32,29 +32,12 @@ if (input) {
                             });
                         }
                     }
-
-                    function task(delay, port, amount) {
-                        let i = 1;
-                        const intervalId = setInterval(function() {
-                            if (i > amount) {
-                                clearInterval(intervalId);
-                                return;
-                            }
-                            port.postMessage({request: "run-data", amount: amount, i: i});
-                            let p = document.querySelector('#progress');
-                            p.innerText = i + "/" + amount + " planów.";
-                            i++;
-                        }, delay);
-                    }
-                    
-                    task(250, port, amount);
+                    port.postMessage({request: "run-data", amount: amount});
                 }
                 else if (msg.name == "values") {
                     if (msg.text !== null) {
                         console.log("Message text is not null:", msg.text);
                     }
-                    let p = document.querySelector('#progress');
-                    p.innerText = "Finished.";
                     chrome.storage.local.get((result) => {
                         const arr = [];
                         for(let i = 1; i <= result["amount"]; i++){
@@ -66,6 +49,11 @@ if (input) {
                         }
                         console.log(arr);
                     });
+                }
+                else if(msg.name == "text-update"){
+                    console.log("Message text is not null:", msg.text);
+                    var p = document.querySelector('#progress');
+                    p.innerText = msg.text;
                 }
                 else{
                     console.log("Error. Received message doesn't exist.");
