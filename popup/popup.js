@@ -40,8 +40,12 @@ if (input) {
                     }
                     chrome.storage.local.get((result) => {
                         const arr = [];
-                        for(let i = 1; i < result["amount"]; i++){
-                            arr[i] = result[i];
+                        for(let i = 1; i <= result["amount"]; i++){
+                            var parser = new DOMParser();
+                            var doc = parser.parseFromString(result[i], 'text/html');
+                        
+                            var container = doc.querySelectorAll('.tabela');
+                            arr[i] = container;
                         }
                         console.log(arr);
                     });
