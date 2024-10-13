@@ -112,28 +112,52 @@ async function exportData(arr){
                     if(lessons[k].innerHTML.trim() == "&nbsp;") continue;
                     else{
                         console.log(lessons[k].querySelectorAll("span"));
-                        console.log(lessons[k].querySelector(".p"), lessons[k].querySelector(".n"), lessons[k].querySelector(".s"));
+                        console.log(lessons[k].querySelectorAll("span[style*='font-size:85%']").length);
+                        if(lessons[k].querySelectorAll("span[style*='font-size:85%']").length > 0){
+                            for(let m = 0; m < lessons[k].querySelectorAll("span[style*='font-size:85%']").length; m++){
+                                let lessons_block = lessons[k].querySelectorAll("span[style*='font-size:85%']");
+                                let lesson_name = lessons_block[m].querySelector(".p");
+                                let teacher = lessons_block[m].querySelector(".n");
+                                let sala = lessons_block[m].querySelector(".s");
+                                
+                                if(lesson_name == null) lesson_name = "???";
+                                else lesson_name = lesson_name.innerHTML.trim();
 
+                                if(teacher == null) continue;
+                                else teacher = teacher.innerHTML.trim();
 
-                        let lesson_name = lessons[k].querySelector(".p");
-                        let teacher = lessons[k].querySelector(".n");
-                        let sala = lessons[k].querySelector(".s");
-                        
-                        if(lesson_name == null) lesson_name = lessons[k].innerHTML.trim();
-                        else lesson_name = lesson_name.innerHTML.trim();
+                                if(sala == null) sala = lesson_name;
+                                else sala = sala.innerHTML.trim();
 
-                        if(teacher == null) continue;
-                        else teacher = teacher.innerHTML.trim();
+                                console.log(lesson_name, teacher, sala);   
 
-                        if(sala == null) sala = lesson_name;
-                        else sala = sala.innerHTML.trim();
-
-                        console.log(lesson_name, teacher, sala);   
-
-                        if(teachers[teacher] == null){
-                            teachers[teacher] = [];
+                                if(teachers[teacher] == null){
+                                    teachers[teacher] = [];
+                                }
+                                teachers[teacher].push({time: time, day: k, lesson: lesson_name, sala: sala});
+                            }
                         }
-                        teachers[teacher].push({time: time, day: k, lesson: lesson_name, sala: sala});
+                        else{
+                            console.log(lessons[k].querySelector(".p"), lessons[k].querySelector(".n"), lessons[k].querySelector(".s"));
+
+                            let lesson_name = lessons[k].querySelector(".p");
+                            let teacher = lessons[k].querySelector(".n");
+                            let sala = lessons[k].querySelector(".s");
+                            
+                            if(lesson_name == null) lesson_name = "???";
+                            else lesson_name = lesson_name.innerHTML.trim();
+    
+                            if(teacher == null) continue;
+                            else teacher = teacher.innerHTML.trim();
+
+                            if(sala == null) sala = lesson_name;
+                            else sala = sala.innerHTML.trim();
+
+                            if(teachers[teacher] == null){
+                                teachers[teacher] = []; 
+                            }   
+                            teachers[teacher].push({time: time, day: k, lesson: lesson_name, sala: sala});
+                        }
                     }
                 }
             }
