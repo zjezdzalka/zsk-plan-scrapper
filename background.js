@@ -25,12 +25,11 @@ chrome.runtime.onConnect.addListener(function(port) {
     port.onMessage.addListener(async function(msg) {
         if (msg.request === "run-data"){
             let text="Successful.";
-            for(let i = 1; i <= msg.amount; i++){
-                await getPlans(i);
+            await getPlans(msg.i);
+            console.log("finished uploading plan "+msg.i+".");
+            if(msg.i == msg.amount){
+                port.postMessage({name:"values", text: text});
             }
-            console.log("finished uploading.");
-            
-            port.postMessage({name:"values", text: text});
         }
         else if (msg.request === "run"){
             let value = await getMain();

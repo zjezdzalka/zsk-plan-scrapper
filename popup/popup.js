@@ -32,19 +32,36 @@ if (input) {
                             });
                         }
                     }
-                    port.postMessage({request: "run-data", amount: amount});
+
+                    function task(delay, port, amount) {
+                        let i = 1;
+                        const intervalId = setInterval(function() {
+                            if (i > amount) {
+                                clearInterval(intervalId);
+                                return;
+                            }
+                            port.postMessage({request: "run-data", amount: amount, i: i});
+                            let p = document.querySelector('#progress');
+                            p.innerText = i + "/" + amount + " planów.";
+                            i++;
+                        }, delay);
+                    }
+                    
+                    task(250, port, amount);
                 }
                 else if (msg.name == "values") {
                     if (msg.text !== null) {
                         console.log("Message text is not null:", msg.text);
                     }
+                    let p = document.querySelector('#progress');
+                    p.innerText = "Finished.";
                     chrome.storage.local.get((result) => {
                         const arr = [];
                         for(let i = 1; i <= result["amount"]; i++){
                             var parser = new DOMParser();
                             var doc = parser.parseFromString(result[i], 'text/html');
                         
-                            var container = doc.querySelectorAll('.tabela');
+                            var container = doc.querySelectorAll('.tabela>tbody');
                             arr[i] = container;
                         }
                         console.log(arr);
