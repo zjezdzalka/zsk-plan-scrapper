@@ -41,7 +41,7 @@ if (input) {
                     chrome.storage.local.get((result) => {
                         const arr = [];
                         for(let i = 1; i < result["amount"]; i++){
-                            arr.i = result[i];
+                            arr[i] = result[i];
                         }
                         console.log(arr);
                     });
