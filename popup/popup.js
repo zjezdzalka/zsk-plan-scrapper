@@ -41,7 +41,7 @@ if (input) {
                     else{
                         console.log("Error. Message text is null.");
                     }
-                    chrome.storage.local.get((result) => {
+                    chrome.storage.local.get(async (result) => {
                         let arr = [];
                         let safe = 1;
                         for(let i = 1; i <= result["amount"]; i++){
@@ -60,7 +60,25 @@ if (input) {
                         }
                         arr = arr.filter(element => element !== null && element !== undefined);
                         console.log(arr);
-                        if(safe) exportData(arr);
+                        let teachers;
+                        if(safe){
+                            teachers = await exportData(arr);
+                            console.log(teachers);
+                            chrome.storage.local.set({ teachers: teachers }).then(() => {
+                                console.log("Teachers is set.");
+                            });
+                            chrome.storage.local.get(async (result) => {
+                                let teachers = result["teachers"];
+                                let amount = result["amount"];
+                                console.log(teachers);
+                                console.log(amount);
+                            });
+                            printOut();
+                        }
+                        else{
+                            console.log("You may not continue.");
+                            teachers = null;
+                        }
                     });
                 }
                 else if(msg.name == "text-update"){
@@ -78,10 +96,8 @@ if (input) {
     });
 }
 
-function exportData(arr){
-    const teachers = [];
-    const days = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"];
-    const times = ["7:10-7:55", "8:00-8:45", "8.50-9.35", "9.50-10.35", "10.40-11.25", "11.30-12.15", "12.30-13:15", "13:20-14:05", "14:10-14:55", "15:00-15:45", "15:50-16:35", "16:40-17:25"];
+async function exportData(arr){
+    const teachers = {};
     for(let i = 0; i < arr.length; i++){
         let element = arr[i];
         console.log(element);
@@ -117,14 +133,23 @@ function exportData(arr){
                         if(teachers[teacher] == null){
                             teachers[teacher] = [];
                         }
-                        teachers[teacher].push({time: time, day: days[k], lesson: lesson_name, sala: sala});
+                        teachers[teacher].push({time: time, day: k, lesson: lesson_name, sala: sala});
                     }
                 }
             }
         }
     }
-    console.log(teachers);
-    return arr;
+    return JSON.stringify(teachers);
+}
+
+function printOut(){
+    chrome.windows.create({
+        url: chrome.runtime.getURL("index.html"),
+        type: "popup",
+        focused: true,
+        height: 400,
+        width: 1650
+    })
 }
 
 var clear = document.getElementById("f17_clear_info_func");

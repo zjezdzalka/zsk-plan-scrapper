@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrapper</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+        *{
+            margin: 0;
+            font-family: 'Montserrat', 'Arial', sans-serif;
+        }
+        main{
+            background-color: rgb(37, 37, 37);
+            width: 100%;
+            height: 100vh;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            overflow-y: scroll;
+            flex-wrap: wrap;
+        }
+        header{
+            height: 25%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        table{
+            width: 90%;
+            border-collapse: collapse;
+            padding: 10px;
+        }
+        td{
+            border: 1px solid white;
+        }
+        section{
+            background-color: rgb(37, 37, 37);
+            height: 75%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: scroll;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <header>
+            <select id="nauczyciel"></select>
+        </header>
+        <section>
+            <table id="table"></table>
+        </section>
+    </main>
+    <script src="index.js"></script>
+</body>
+</html>
