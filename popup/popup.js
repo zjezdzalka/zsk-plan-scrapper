@@ -32,17 +32,18 @@ if (input) {
                             });
                         }
                     }
-                    port.postMessage({request: "run-data"});
+                    port.postMessage({request: "run-data", amount: amount});
                 }
                 else if (msg.name == "values") {
                     if (msg.text !== null) {
                         console.log("Message text is not null:", msg.text);
                     }
                     chrome.storage.local.get((result) => {
+                        const arr = [];
                         for(let i = 1; i < result["amount"]; i++){
-                            console.log(result[i]);
+                            arr.i = result[i];
                         }
-                        console.log(result);
+                        console.log(arr);
                     });
                 }
                 else{

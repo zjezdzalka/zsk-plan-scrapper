@@ -25,9 +25,10 @@ chrome.runtime.onConnect.addListener(function(port) {
     port.onMessage.addListener(async function(msg) {
         if (msg.request === "run-data"){
             let text="Successful.";
-            for(let i = 1; i <= 32; i++){
+            for(let i = 1; i <= msg.amount; i++){
                 await getPlans(i);
             }
+            console.log("finished uploading.");
             
             port.postMessage({name:"values", text: text});
         }
