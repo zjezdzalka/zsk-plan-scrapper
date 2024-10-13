@@ -34,7 +34,7 @@ if (input) {
                     }
                     port.postMessage({request: "run-data"});
                 }
-                else if (msg.name == "amount") {
+                else if (msg.name == "values") {
                     if (msg.text !== null) {
                         console.log("Message text is not null:", msg.text);
                     }
