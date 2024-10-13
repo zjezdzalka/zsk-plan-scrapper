@@ -82,7 +82,7 @@ function exportData(arr){
     const teachers = [];
     const days = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"];
     const times = ["7:10-7:55", "8:00-8:45", "8.50-9.35", "9.50-10.35", "10.40-11.25", "11.30-12.15", "12.30-13:15", "13:20-14:05", "14:10-14:55", "15:00-15:45", "15:50-16:35", "16:40-17:25"];
-    for(let i = 0; i < /*arr.length*/ 1; i++){
+    for(let i = 0; i < arr.length; i++){
         let element = arr[i];
         console.log(element);
         let lesson = element[0].querySelectorAll("tr");
@@ -91,28 +91,39 @@ function exportData(arr){
             if(lesson[j].querySelector(".nr") != null){
                 let time = lesson[j].querySelector(".nr").innerText;
                 let lessons = lesson[j].querySelectorAll(".l");
-                for(let j = 0; j < lessons.length; j++){
-                    console.log(lessons[j]);
-                    if(lessons[j].querySelectorAll("span") == null) continue;
+                for(let k = 0; k < lessons.length; k++){
+                    console.log(lessons[k]);
+                    if(lessons[k].innerHTML.trim() == "&nbsp;") continue;
                     else{
-                        console.log(lessons[j].querySelectorAll("span"));
+                        console.log(lessons[k].querySelectorAll("span"));
+                        console.log(lessons[k].querySelector(".p"), lessons[k].querySelector(".n"), lessons[k].querySelector(".s"));
 
-                        let lesson_name = lessons[j].querySelector(".p").textContent;
-                        let teacher = lessons[j].querySelector(".n").textContent;
-                        let sala = lessons[j].querySelector(".s").textContent;
+
+                        let lesson_name = lessons[k].querySelector(".p");
+                        let teacher = lessons[k].querySelector(".n");
+                        let sala = lessons[k].querySelector(".s");
                         
+                        if(lesson_name == null) lesson_name = lessons[k].innerHTML.trim();
+                        else lesson_name = lesson_name.innerHTML.trim();
+
+                        if(teacher == null) continue;
+                        else teacher = teacher.innerHTML.trim();
+
+                        if(sala == null) sala = lesson_name;
+                        else sala = sala.innerHTML.trim();
+
                         console.log(lesson_name, teacher, sala);   
 
                         if(teachers[teacher] == null){
                             teachers[teacher] = [];
                         }
-                        teachers[teacher].push({time: time, day: days[j], lesson: lesson_name, sala: sala});
+                        teachers[teacher].push({time: time, day: days[k], lesson: lesson_name, sala: sala});
                     }
                 }
             }
         }
     }
-    console.log(arr);
+    console.log(teachers);
     return arr;
 }
 
