@@ -82,7 +82,7 @@ function exportData(arr){
     const teachers = [];
     const days = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"];
     const times = ["7:10-7:55", "8:00-8:45", "8.50-9.35", "9.50-10.35", "10.40-11.25", "11.30-12.15", "12.30-13:15", "13:20-14:05", "14:10-14:55", "15:00-15:45", "15:50-16:35", "16:40-17:25"];
-    for(let i = 0; i < arr.length; i++){
+    for(let i = 0; i < /*arr.length*/ 1; i++){
         let element = arr[i];
         console.log(element);
         let lesson = element[0].querySelectorAll("tr");
@@ -93,12 +93,16 @@ function exportData(arr){
                 let lessons = lesson[j].querySelectorAll(".l");
                 for(let j = 0; j < lessons.length; j++){
                     console.log(lessons[j]);
-                    if(lessons[j].textContent == "&nbsp;") continue;
+                    if(lessons[j].querySelectorAll("span") == null) continue;
                     else{
-                        let selected_lesson = lessons[j];
-                        let lesson_name = selected_lesson.querySelector(".p").textContent;
-                        let teacher = selected_lesson.querySelector(".n").textContent;
-                        let sala = selected_lesson.querySelector(".s").textContent;
+                        console.log(lessons[j].querySelectorAll("span"));
+
+                        let lesson_name = lessons[j].querySelector(".p").textContent;
+                        let teacher = lessons[j].querySelector(".n").textContent;
+                        let sala = lessons[j].querySelector(".s").textContent;
+                        
+                        console.log(lesson_name, teacher, sala);   
+
                         if(teachers[teacher] == null){
                             teachers[teacher] = [];
                         }
