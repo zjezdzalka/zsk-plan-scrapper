@@ -3,6 +3,16 @@ if (input) {
     input.addEventListener("click", async function() {
         console.log("Click");
         try {
+            chrome.storage.local.clear(function() {
+                var error = chrome.runtime.lastError;
+                if (error) {
+                    console.error(error);
+                }
+            });
+            chrome.storage.sync.clear();
+
+            console.log("cleared storage.");
+
             var port = chrome.runtime.connect({name: "get-plan-data"});
             port.postMessage({request: "run"});
             port.onMessage.addListener(function(msg) {
@@ -53,7 +63,6 @@ if (clear) {
             if (error) {
                 console.error(error);
             }
-            // do something more
         });
         chrome.storage.sync.clear();
     });
