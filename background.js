@@ -17,7 +17,7 @@ async function getPlans(i, port, amount){
     chrome.storage.local.set({ [i]: data }).then(() => {
         console.log("Value "+i+" is set.");
     });
-    port.postMessage({name:"text-update", text: `${i}/${amount} planów.`})
+    port.postMessage({name:"text-update", text: `Pobrano ${i} z ${amount} planów.`})
     return data;
 }
 
