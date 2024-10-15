@@ -34,7 +34,7 @@ chrome.storage.local.get(async (result) => {
     nauczyciel.addEventListener("change", function(){
         sale.style.boxShadow = "0 0 0 0";
         classesElement.style.boxShadow = "0 0 0 0";
-        nauczyciel.style.boxShadow = "0 0 5px white";
+        nauczyciel.style.boxShadow = "0 0 15px white";
 
         let value = nauczyciel.value;
         let table = document.querySelector("#table");
@@ -81,7 +81,7 @@ chrome.storage.local.get(async (result) => {
     sale.addEventListener("change", function(){
         classesElement.style.boxShadow = "0 0 0 0";
         nauczyciel.style.boxShadow = "0 0 0 0";
-        sale.style.boxShadow = "0 0 5px white";
+        sale.style.boxShadow = "0 0 15px white";
 
         let value = sale.value;
 
@@ -132,7 +132,7 @@ chrome.storage.local.get(async (result) => {
     classesElement.addEventListener("change", function(){
         sale.style.boxShadow = "0 0 0 0";
         nauczyciel.style.boxShadow = "0 0 0 0";
-        classesElement.style.boxShadow = "0 0 5px white";
+        classesElement.style.boxShadow = "0 0 15px white";
 
         let value = classes.indexOf(classesElement.value);
 

@@ -348,3 +348,10 @@ if (clear) {
         chrome.storage.sync.clear();
     });
 }
+
+var open = document.getElementById("f17_open_func");
+if (open) {
+    open.addEventListener("click", async function() {
+        printOut();
+    });
+}
