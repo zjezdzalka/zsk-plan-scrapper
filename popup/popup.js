@@ -24,11 +24,19 @@ if (input) {
                         var doc = parser.parseFromString(msg.text, 'text/html');
                         
                         var container = doc.querySelectorAll('#oddzialy>.el');
+                        var container_els = doc.querySelectorAll('#oddzialy>.el>a');
                         var amount = container.length;
+                        const classes = [];
+                        for(let i = 0; i < container.length; i++){
+                            classes.push(container_els[i].innerText);
+                        }
 
                         if (container) {
                             chrome.storage.local.set({ amount: amount }).then(() => {
                                 console.log("Amount is set.");
+                            });
+                            chrome.storage.local.set({ classes: JSON.stringify(classes) }).then(() => {
+                                console.log("Classes are set.");
                             });
                         }
                     }
@@ -60,7 +68,7 @@ if (input) {
                         }
                         arr = arr.filter(element => element !== null && element !== undefined);
                         console.log(arr);
-                        let teachers, sale;
+                        let teachers, sale, classes;
                         if(safe){
                             var p = document.querySelector('#progress');
                             p.innerText = "Przetwarzanie danych...";
@@ -75,11 +83,20 @@ if (input) {
                             chrome.storage.local.set({ rooms: sale }).then(() => {
                                 console.log("Teachers is set.");
                             });
+
+                            classes = await exportClassData(arr);
+                            console.log(classes);
+                            chrome.storage.local.set({ classes_data: classes }).then(() => {
+                                console.log("Classes is set.");
+                            });
+
                             chrome.storage.local.get(async (result) => {
                                 let teachers = result["teachers"];
                                 let amount = result["amount"];
+                                let classes = result["amount"];
                                 console.log(teachers);
                                 console.log(amount);
+                                console.log(classes);
                             });
                             printOut();
                         }
@@ -108,19 +125,14 @@ async function exportTeacherData(arr){
     const teachers = {};
     for(let i = 0; i < arr.length; i++){
         let element = arr[i];
-        console.log(element);
         let lesson = element[0].querySelectorAll("tr");
-        console.log(lesson);
         for(let j = 0; j < lesson.length; j++){
             if(lesson[j].querySelector(".nr") != null){
                 let time = lesson[j].querySelector(".nr").innerText;
                 let lessons = lesson[j].querySelectorAll(".l");
                 for(let k = 0; k < lessons.length; k++){
-                    console.log(lessons[k]);
                     if(lessons[k].innerHTML.trim() == "&nbsp;") continue;
                     else{
-                        console.log(lessons[k].querySelectorAll("span"));
-                        console.log(lessons[k].querySelectorAll("span[style*='font-size:85%']").length);
                         if(lessons[k].querySelectorAll("span[style*='font-size:85%']").length > 0){
                             for(let m = 0; m < lessons[k].querySelectorAll("span[style*='font-size:85%']").length; m++){
                                 let lessons_block = lessons[k].querySelectorAll("span[style*='font-size:85%']");
@@ -137,17 +149,13 @@ async function exportTeacherData(arr){
                                 if(sala == null) sala = lesson_name;
                                 else sala = sala.innerHTML.trim();
 
-                                console.log(lesson_name, teacher, sala);   
-
                                 if(teachers[teacher] == null){
                                     teachers[teacher] = [];
                                 }
-                                teachers[teacher].push({time: time, day: k, lesson: lesson_name, sala: sala});
+                                teachers[teacher].push({time: time, day: k, lesson: lesson_name, sala: sala, class: i});
                             }
                         }
                         else{
-                            console.log(lessons[k].querySelector(".p"), lessons[k].querySelector(".n"), lessons[k].querySelector(".s"));
-
                             let lesson_name = lessons[k].querySelector(".p");
                             let teacher = lessons[k].querySelector(".n");
                             let sala = lessons[k].querySelector(".s");
@@ -164,7 +172,7 @@ async function exportTeacherData(arr){
                             if(teachers[teacher] == null){
                                 teachers[teacher] = []; 
                             }   
-                            teachers[teacher].push({time: time, day: k, lesson: lesson_name, sala: sala});
+                            teachers[teacher].push({time: time, day: k, lesson: lesson_name, sala: sala, class: i});
                         }
                     }
                 }
@@ -178,19 +186,14 @@ async function exportRoomData(arr){
     const rooms = {};
     for(let i = 0; i < arr.length; i++){
         let element = arr[i];
-        console.log(element);
         let lesson = element[0].querySelectorAll("tr");
-        console.log(lesson);
         for(let j = 0; j < lesson.length; j++){
             if(lesson[j].querySelector(".nr") != null){
                 let time = lesson[j].querySelector(".nr").innerText;
                 let lessons = lesson[j].querySelectorAll(".l");
                 for(let k = 0; k < lessons.length; k++){
-                    console.log(lessons[k]);
                     if(lessons[k].innerHTML.trim() == "&nbsp;") continue;
                     else{
-                        console.log(lessons[k].querySelectorAll("span"));
-                        console.log(lessons[k].querySelectorAll("span[style*='font-size:85%']").length);
                         if(lessons[k].querySelectorAll("span[style*='font-size:85%']").length > 0){
                             for(let m = 0; m < lessons[k].querySelectorAll("span[style*='font-size:85%']").length; m++){
                                 let lessons_block = lessons[k].querySelectorAll("span[style*='font-size:85%']");
@@ -207,17 +210,34 @@ async function exportRoomData(arr){
                                 if(sala == null) continue;
                                 else sala = sala.innerHTML.trim();
 
-                                console.log(lesson_name, teacher, sala);   
-
                                 if(rooms[sala] == null){
                                     rooms[sala] = [];
                                 }
-                                rooms[sala].push({time: time, day: k, lesson: lesson_name, sala: sala});
+                                rooms[sala].push({time: time, day: k, lesson: lesson_name, class: i, teacher: teacher});
+                            }
+                        }
+                        else if(lessons[k].querySelectorAll(".p").length>2){
+                            for(let m=0;m<lessons[k].querySelectorAll(".p").length;m+=2){
+                                let lesson_name = lessons[k].querySelectorAll(".p")[m];
+                                let sala = lessons[k].querySelectorAll(".s")[m/2];
+                                let teacher = lessons[k].querySelector(".n");
+
+                                if(lesson_name == null) lesson_name = "???";
+                                else lesson_name = lesson_name.innerHTML.trim();
+        
+                                if(teacher == null) teacher = lesson_name;
+                                else teacher = teacher.innerHTML.trim();
+
+                                if(sala == null) continue;
+                                else sala = sala.innerHTML.trim();
+
+                                if(rooms[sala] == null){
+                                    rooms[sala] = []; 
+                                }   
+                                rooms[sala].push({time: time, day: k, lesson: lesson_name, class: i, teacher: teacher});
                             }
                         }
                         else{
-                            console.log(lessons[k].querySelector(".p"), lessons[k].querySelector(".n"), lessons[k].querySelector(".s"));
-
                             let lesson_name = lessons[k].querySelector(".p");
                             let teacher = lessons[k].querySelector(".n");
                             let sala = lessons[k].querySelector(".s");
@@ -234,7 +254,7 @@ async function exportRoomData(arr){
                             if(rooms[sala] == null){
                                 rooms[sala] = []; 
                             }   
-                            rooms[sala].push({time: time, day: k, lesson: lesson_name, sala: sala});
+                            rooms[sala].push({time: time, day: k, lesson: lesson_name, class: i, teacher: teacher});
                         }
                     }
                 }
@@ -244,13 +264,74 @@ async function exportRoomData(arr){
     return JSON.stringify(rooms);
 }
 
+async function exportClassData(arr){
+    const classes = {};
+    for(let i = 0; i < arr.length; i++){
+        let element = arr[i];
+        let lesson = element[0].querySelectorAll("tr");
+        for(let j = 0; j < lesson.length; j++){
+            if(lesson[j].querySelector(".nr") != null){
+                let time = lesson[j].querySelector(".nr").innerText;
+                let lessons = lesson[j].querySelectorAll(".l");
+                for(let k = 0; k < lessons.length; k++){
+                    if(lessons[k].innerHTML.trim() == "&nbsp;") continue;
+                    else{
+                        if(lessons[k].querySelectorAll("span[style*='font-size:85%']").length > 0){
+                            for(let m = 0; m < lessons[k].querySelectorAll("span[style*='font-size:85%']").length; m++){
+                                let lessons_block = lessons[k].querySelectorAll("span[style*='font-size:85%']");
+                                let lesson_name = lessons_block[m].querySelector(".p");
+                                let teacher = lessons_block[m].querySelector(".n");
+                                let sala = lessons_block[m].querySelector(".s");
+                                
+                                if(lesson_name == null) lesson_name = "???";
+                                else lesson_name = lesson_name.innerHTML.trim();
+
+                                if(teacher == null) teacher = "???";
+                                else teacher = teacher.innerHTML.trim();
+
+                                if(sala == null) continue;
+                                else sala = sala.innerHTML.trim();
+
+                                if(classes[i] == null){
+                                    classes[i] = [];
+                                }
+                                classes[i].push({time: time, day: k, teacher: teacher, lesson: lesson_name, sala: sala});
+                            }
+                        }
+                        else{
+                            let lesson_name = lessons[k].querySelector(".p");
+                            let teacher = lessons[k].querySelector(".n");
+                            let sala = lessons[k].querySelector(".s");
+                            
+                            if(lesson_name == null) lesson_name = "???";
+                            else lesson_name = lesson_name.innerHTML.trim();
+    
+                            if(teacher == null) teacher = "???";
+                            else teacher = teacher.innerHTML.trim();
+
+                            if(sala == null) sala = "???";
+                            else sala = sala.innerHTML.trim();
+
+                            if(classes[i] == null){
+                                classes[i] = []; 
+                            }   
+                            classes[i].push({time: time, day: k, teacher: teacher, lesson: lesson_name, sala: sala});
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return JSON.stringify(classes);
+}
+
 
 function printOut(){
     chrome.windows.create({
         url: chrome.runtime.getURL("index.html"),
         type: "popup",
         focused: true,
-        height: 400,
+        height: 1000,
         width: 1650
     })
 }
