@@ -23,7 +23,7 @@
             flex-wrap: wrap;
         }
         header{
-            height: 25%;
+            height: 15%;
             width: 100%;
             display: flex;
             justify-content: space-around;
@@ -55,13 +55,19 @@
         }
         td{
             border: 1px solid white;
+            transition: font-size 250ms ease-in-out, font-weight 250ms ease-in-out;
+            padding: 5px;
         }
         td:hover{
             font-size: 150%;
+            font-weight: bold;
+        }
+        td:first-child{
+            font-size: 100%;
         }
         section{
             background-color: rgb(37, 37, 37);
-            height: 75%;
+            height: 85%;
             width: 100%;
             display: flex;
             justify-content: center;
