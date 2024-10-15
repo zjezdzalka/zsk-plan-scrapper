@@ -49,11 +49,16 @@
             border-collapse: collapse;
             padding: 10px;
             border: 1px solid white;
+            text-wrap: wrap;
         }
         table>tr:first-child{
             background-color: rgb(23, 23, 23);
         }
+        tr{
+            width: 100%;
+        }
         td{
+            width: 18%;
             border: 1px solid white;
             transition: font-size 250ms ease-in-out, font-weight 250ms ease-in-out;
             padding: 5px;
@@ -63,6 +68,7 @@
             font-weight: bold;
         }
         td:first-child{
+            width: 10%;
             font-size: 100%;
         }
         section{
