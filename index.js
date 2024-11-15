@@ -1,10 +1,20 @@
 chrome.storage.local.get(async (result) => {
+    console.log(result);
     let JSONTeacherData = JSON.parse(result["teachers"]);
+    let classNamesJSON = JSON.parse(result["classes"]);
+    let classesJSON = JSON.parse(result["classes_data"]);
+    let fredryJSON = JSON.parse(result["fre"]);
+    let inneJSON = JSON.parse(result["other"]);
+    let bukoJSON = JSON.parse(result["buko"]);
+
+    console.log(fredryJSON);
+    console.log(inneJSON);
+    console.log(bukoJSON);
+
     let JSONRoomData = JSON.parse(result["rooms"]);
     let classes = [];
     let classesElement = document.querySelector("#classes");
-    let classNamesJSON = JSON.parse(result["classes"]);
-    let classesJSON = JSON.parse(result["classes_data"]);
+
     const nauczyciel = document.querySelector("#nauczyciel");
     const sale = document.querySelector("#sale");
     Object.keys(JSONTeacherData).forEach(element => {
@@ -76,7 +86,6 @@ chrome.storage.local.get(async (result) => {
             table.appendChild(tr);
         });
     });
-
 
     sale.addEventListener("change", function(){
         classesElement.style.boxShadow = "0 0 0 0";
@@ -177,6 +186,243 @@ chrome.storage.local.get(async (result) => {
                 tr.appendChild(td);
             }
             table.appendChild(tr);
+        });
+    });
+
+    document.querySelector("#fredry").addEventListener("click", function(){
+        sale.style.boxShadow = "0 0 0 0";
+        nauczyciel.style.boxShadow = "0 0 0 0";
+        classesElement.style.boxShadow = "0 0 0 0";
+
+        let table = document.querySelector("#table");
+        table.innerHTML = "";
+        let tr = document.createElement("tr");
+        let th = document.createElement("th");
+        th.innerText = "Fredry";
+        tr.appendChild(th);
+        table.appendChild(tr);
+        th.innerText = "Godzina";
+        tr.appendChild(th);
+
+        for(let i = 0; i < 5; i++){
+            th = document.createElement("th");
+            th.innerText = days[i];
+            tr.appendChild(th);
+        }
+        table.appendChild(tr);
+        times.forEach(time => {
+            let tr = document.createElement("tr");
+            let td = document.createElement("td");
+            td.style = "text-align: end;";
+            td.innerText = time;
+            tr.appendChild(td);
+            let text, teacher;
+            let createRow = true;
+            let j = times.indexOf(time);
+            for(let i = 0; i < 5; i++){
+                let tableColumnClasses = "";
+                let tableColumnTeachers = "";
+                if(fredryJSON[j] == null){
+                    createRow = false;
+                    break;
+                }
+                let teachersInDB = [];
+                let classesInDB = [];
+                for(let k = 0; k<Object.keys(fredryJSON[j]).length;++k){
+                    if(parseInt(fredryJSON[j][k]["day"]) == parseInt(i)){
+                        text = classes[parseInt(fredryJSON[j][k]["class"])];
+                        teacher = fredryJSON[j][k]["teacher"];
+                        if(text != null && teacher != null){
+                            if(!teachersInDB.includes(teacher) && !classesInDB.includes(text)){
+                                tableColumnClasses += text + ", ";
+                                classesInDB.push(text);
+                                tableColumnTeachers += teacher + ", ";
+                                teachersInDB.push(teacher);
+                            }
+                            else{
+                                if(!teachersInDB.includes(teacher)){
+                                    tableColumnTeachers += teacher + ", ";
+                                    teachersInDB.push(teacher);
+                                }
+                                else{
+                                    tableColumnClasses += text + ", ";
+                                    classesInDB.push(text);
+                                }
+                            }
+                        }
+                    }
+                }
+                let td = document.createElement("td");
+                if(tableColumnClasses && tableColumnTeachers){
+                    tableColumnClasses = tableColumnClasses.slice(0, -2);
+                    tableColumnTeachers = tableColumnTeachers.slice(0, -2);
+                    td.innerHTML = "<p>"+tableColumnClasses+"</p><hr><p>"+tableColumnTeachers+"</p>";
+                }
+                else td.innerHTML = "";
+                
+                tr.appendChild(td);
+            }
+            if(createRow) table.appendChild(tr);
+        });
+    });
+
+    document.querySelector("#bukowska").addEventListener("click", function(){
+        sale.style.boxShadow = "0 0 0 0";
+        nauczyciel.style.boxShadow = "0 0 0 0";
+        classesElement.style.boxShadow = "0 0 0 0";
+
+        let table = document.querySelector("#table");
+        table.innerHTML = "";
+        let tr = document.createElement("tr");
+        let th = document.createElement("th");
+        th.innerText = "Bukowska";
+        tr.appendChild(th);
+        table.appendChild(tr);
+        th.innerText = "Godzina";
+        tr.appendChild(th);
+
+        for(let i = 0; i < 5; i++){
+            th = document.createElement("th");
+            th.innerText = days[i];
+            tr.appendChild(th);
+        }
+        table.appendChild(tr);
+        times.forEach(time => {
+            let tr = document.createElement("tr");
+            let td = document.createElement("td");
+            td.style = "text-align: end;";
+            td.innerText = time;
+            tr.appendChild(td);
+            let text, teacher;
+            let createRow = true;
+            let j = times.indexOf(time);
+            for(let i = 0; i < 5; i++){
+                let tableColumnClasses = "";
+                let tableColumnTeachers = "";
+                if(bukoJSON[j] == null){
+                    createRow = false;
+                    break;
+                }
+                let teachersInDB = [];
+                let classesInDB = [];
+                for(let k = 0; k<Object.keys(bukoJSON[j]).length;++k){
+                    if(parseInt(bukoJSON[j][k]["day"]) == parseInt(i)){
+                        text = classes[parseInt(bukoJSON[j][k]["class"])];
+                        teacher = bukoJSON[j][k]["teacher"];
+                        if(text != null && teacher != null){
+                            if(!teachersInDB.includes(teacher) && !classesInDB.includes(text)){
+                                tableColumnClasses += text + ", ";
+                                classesInDB.push(text);
+                                tableColumnTeachers += teacher + ", ";
+                                teachersInDB.push(teacher);
+                            }
+                            else{
+                                if(!teachersInDB.includes(teacher)){
+                                    tableColumnTeachers += teacher + ", ";
+                                    teachersInDB.push(teacher);
+                                }
+                                else{
+                                    tableColumnClasses += text + ", ";
+                                    classesInDB.push(text);
+                                }
+                            }
+                        }
+                    }
+                }
+                let td = document.createElement("td");
+                if(tableColumnClasses && tableColumnTeachers){
+                    tableColumnClasses = tableColumnClasses.slice(0, -2);
+                    tableColumnTeachers = tableColumnTeachers.slice(0, -2);
+                    td.innerHTML = "<p>"+tableColumnClasses+"</p><hr><p>"+tableColumnTeachers+"</p>";
+                }
+                else td.innerHTML = "";
+                
+                tr.appendChild(td);
+            }
+            if(createRow) table.appendChild(tr);
+        });
+    });
+
+    document.querySelector("#inne").addEventListener("click", function(){
+        sale.style.boxShadow = "0 0 0 0";
+        nauczyciel.style.boxShadow = "0 0 0 0";
+        classesElement.style.boxShadow = "0 0 0 0";
+
+        let table = document.querySelector("#table");
+        table.innerHTML = "";
+        let tr = document.createElement("tr");
+        let th = document.createElement("th");
+        th.innerText = "Bukowska";
+        tr.appendChild(th);
+        table.appendChild(tr);
+        th.innerText = "Godzina";
+        tr.appendChild(th);
+
+        for(let i = 0; i < 5; i++){
+            th = document.createElement("th");
+            th.innerText = days[i];
+            tr.appendChild(th);
+        }
+        table.appendChild(tr);
+        times.forEach(time => {
+            let tr = document.createElement("tr");
+            let td = document.createElement("td");
+            td.style = "text-align: end;";
+            td.innerText = time;
+            tr.appendChild(td);
+            let text, teacher;
+            let createRow = true;
+            let j = times.indexOf(time);
+            for(let i = 0; i < 5; i++){
+                let tableColumnClasses = "";
+                let tableColumnTeachers = "";
+                if(inneJSON[j] == null){
+                    createRow = false;
+                    break;
+                }
+                let teachersInDB = [];
+                let classesInDB = [];
+                for(let k = 0; k<Object.keys(inneJSON[j]).length;++k){
+                    if(parseInt(inneJSON[j][k]["day"]) == parseInt(i)){
+                        text = classes[parseInt(inneJSON[j][k]["class"])];
+                        teacher = inneJSON[j][k]["teacher"];
+                        sala = inneJSON[j][k]["sala"];
+                        if(text != null && teacher != null){
+                            if(!teachersInDB.includes(teacher) && !classesInDB.includes(text)){
+                                console.log(text, teacher, sala);
+                                tableColumnClasses += text + ", ";
+                                classesInDB.push(text);
+                                tableColumnTeachers += teacher;
+                                tableColumnTeachers += sala!=null?"-"+sala:"" ;
+                                tableColumnTeachers += ", ";
+                                teachersInDB.push(teacher);
+                            }
+                            else{
+                                if(!teachersInDB.includes(teacher)){
+                                    tableColumnTeachers += teacher;
+                                    tableColumnTeachers += sala!=null?"-"+sala:"" ;
+                                    tableColumnTeachers += ", ";
+                                    teachersInDB.push(teacher);
+                                }
+                                else{
+                                    tableColumnClasses += text + ", ";
+                                    classesInDB.push(text);
+                                }
+                            }
+                        }
+                    }
+                }
+                let td = document.createElement("td");
+                if(tableColumnClasses && tableColumnTeachers){
+                    tableColumnClasses = tableColumnClasses.slice(0, -2);
+                    tableColumnTeachers = tableColumnTeachers.slice(0, -2);
+                    td.innerHTML = "<p>"+tableColumnClasses+"</p><hr><p>"+tableColumnTeachers+"</p>";
+                }
+                else td.innerHTML = "";
+                
+                tr.appendChild(td);
+            }
+            if(createRow) table.appendChild(tr);
         });
     });
 });
