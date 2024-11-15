@@ -48,24 +48,34 @@ chrome.storage.local.get(async (result) => {
 
         let value = nauczyciel.value;
         let table = document.querySelector("#table");
+
         table.innerHTML = "";
+
         let tr = document.createElement("tr");
         let th = document.createElement("th");
+
         th.innerText = "Godzina";
         tr.appendChild(th);
+
         for(let i = 0; i < 5; i++){
             th = document.createElement("th");
             th.innerText = days[i];
             tr.appendChild(th);
         }
+
         table.appendChild(tr);
         times.forEach(time => {
+            let howManyLessons = 0;
+
             let tr = document.createElement("tr");
             let td = document.createElement("td");
+
             td.style = "text-align: end;";
             td.innerText = time;
             tr.appendChild(td);
+
             let teacher_data = JSONTeacherData[value];
+
             for(let i = 0; i < 5; i++){
                 let text, sala, lessonClass;
                 for(let j = 0; j < teacher_data.length; j++){
@@ -73,17 +83,21 @@ chrome.storage.local.get(async (result) => {
                         text = teacher_data[j]["lesson"];
                         sala = teacher_data[j]["sala"];
                         lessonClass = classes[teacher_data[j]["class"]];
+
                         if(text === undefined) text = "";
                         if(sala === undefined) sala = "";
                         if(lessonClass === undefined) lessonClass = "";
                     }
                 }
                 let td = document.createElement("td");
-                if(text && sala && lessonClass) td.innerText = text+", "+sala+", "+lessonClass;
+                if(text && sala && lessonClass){
+                    td.innerText = text+", "+sala+", "+lessonClass;
+                    howManyLessons++;
+                }
                 else td.innerText = "";
                 tr.appendChild(td);
             }
-            table.appendChild(tr);
+            if(howManyLessons != 0) table.appendChild(tr);
         });
     });
 
@@ -95,46 +109,63 @@ chrome.storage.local.get(async (result) => {
         let value = sale.value;
 
         let table = document.querySelector("#table");
+
         table.innerHTML = "";
+
         let tr = document.createElement("tr");
         let th = document.createElement("th");
+
         th.innerText = "Godzina";
         tr.appendChild(th);
+
         for(let i = 0; i < 5; i++){
             th = document.createElement("th");
             th.innerText = days[i];
             tr.appendChild(th);
         }
+
         table.appendChild(tr);
+
         times.forEach(time => {
             let tr = document.createElement("tr");
             let td = document.createElement("td");
+
             td.style = "text-align: end;";
             td.innerText = time;
             tr.appendChild(td);
+
+            let howManyLessons = 0;
             let room_data = JSONRoomData[value];
             for(let i = 0; i < 5; i++){
                 let text, teacher, lessonClass;
                 const roomInfo = [];
+
                 for(let j = 0; j < room_data.length; j++){
                     if(room_data[j]["time"] == times.indexOf(time) && room_data[j]["day"] == i){
                         text = room_data[j]["lesson"];
                         teacher = room_data[j]["teacher"];
                         lessonClass = classes[room_data[j]["class"]];
-                        roomInfo.push([text, teacher, lessonClass]);
+
                         if(text === undefined) text = "";
                         if(teacher === undefined) teacher = "";
                         if(lessonClass === undefined) lessonClass = "";
+
+                        roomInfo.push([text, teacher, lessonClass]);
                     }
                 }
+
                 let td = document.createElement("td");
+
                 for(let room_i = 0; room_i<roomInfo.length;++room_i){
-                    if(text && teacher && lessonClass) td.innerHTML += "<p>"+roomInfo[room_i][0]+", "+roomInfo[room_i][1]+", "+roomInfo[room_i][2]+"</p>";
+                    if(text && teacher && lessonClass){
+                        td.innerHTML += "<p>"+roomInfo[room_i][0]+", "+roomInfo[room_i][1]+", "+roomInfo[room_i][2]+"</p>";
+                        howManyLessons++;
+                    }
                     else td.innerHTML += "";
                 }
                 tr.appendChild(td);
             }
-            table.appendChild(tr);
+            if(howManyLessons != 0) table.appendChild(tr);
         });
     });
 
@@ -146,46 +177,67 @@ chrome.storage.local.get(async (result) => {
         let value = classes.indexOf(classesElement.value);
 
         let table = document.querySelector("#table");
+
         table.innerHTML = "";
+
         let tr = document.createElement("tr");
         let th = document.createElement("th");
+
         th.innerText = "Godzina";
         tr.appendChild(th);
+
         for(let i = 0; i < 5; i++){
             th = document.createElement("th");
             th.innerText = days[i];
             tr.appendChild(th);
         }
+
         table.appendChild(tr);
+
         times.forEach(time => {
             let tr = document.createElement("tr");
             let td = document.createElement("td");
+
             td.style = "text-align: end;";
             td.innerText = time;
             tr.appendChild(td);
+
             let class_data = classesJSON[value];
+            let howManyLessons = 0;
+
             for(let i = 0; i < 5; i++){
+                if(classesJSON[value] == null){
+                    createRow = false;
+                    break;
+                }
+
                 let text, teacher, sala;
                 const roomClasses = [];
+
                 for(let j = 0; j < class_data.length; j++){
                     if(class_data[j]["time"] == times.indexOf(time) && class_data[j]["day"] == i){
                         text = class_data[j]["lesson"];
                         teacher = class_data[j]["teacher"];
                         sala = class_data[j]["sala"];
+                        
                         if(text === undefined) text = "";
                         if(teacher === undefined) teacher = "";
                         if(sala === undefined) sala = "";
+                            
                         roomClasses.push([text, teacher, sala]);
                     }
                 }
                 let td = document.createElement("td");
                 for(let room_i = 0; room_i<roomClasses.length;++room_i){
-                    if(text && teacher && sala) td.innerHTML += "<p>"+roomClasses[room_i][0]+", "+roomClasses[room_i][1]+", "+roomClasses[room_i][2]+"</p>";
+                    if(text && teacher && sala){
+                        td.innerHTML += "<p>"+roomClasses[room_i][0]+", "+roomClasses[room_i][1]+", "+roomClasses[room_i][2]+"</p>";
+                        howManyLessons++;
+                    }
                     else td.innerHTML += "";
                 }
                 tr.appendChild(td);
             }
-            table.appendChild(tr);
+            if(howManyLessons != 0) table.appendChild(tr);
         });
     });
 
@@ -195,12 +247,17 @@ chrome.storage.local.get(async (result) => {
         classesElement.style.boxShadow = "0 0 0 0";
 
         let table = document.querySelector("#table");
+
         table.innerHTML = "";
+
         let tr = document.createElement("tr");
         let th = document.createElement("th");
+
         th.innerText = "Fredry";
         tr.appendChild(th);
+
         table.appendChild(tr);
+
         th.innerText = "Godzina";
         tr.appendChild(th);
 
@@ -209,33 +266,43 @@ chrome.storage.local.get(async (result) => {
             th.innerText = days[i];
             tr.appendChild(th);
         }
+
         table.appendChild(tr);
+
         times.forEach(time => {
             let tr = document.createElement("tr");
             let td = document.createElement("td");
+
             td.style = "text-align: end;";
             td.innerText = time;
             tr.appendChild(td);
+
             let text, teacher;
             let createRow = true;
             let j = times.indexOf(time);
+
             for(let i = 0; i < 5; i++){
                 let tableColumnClasses = "";
                 let tableColumnTeachers = "";
+
                 if(fredryJSON[j] == null){
                     createRow = false;
                     break;
                 }
+
                 let teachersInDB = [];
                 let classesInDB = [];
+
                 for(let k = 0; k<Object.keys(fredryJSON[j]).length;++k){
                     if(parseInt(fredryJSON[j][k]["day"]) == parseInt(i)){
                         text = classes[parseInt(fredryJSON[j][k]["class"])];
                         teacher = fredryJSON[j][k]["teacher"];
+
                         if(text != null && teacher != null){
                             if(!teachersInDB.includes(teacher) && !classesInDB.includes(text)){
                                 tableColumnClasses += text + ", ";
                                 classesInDB.push(text);
+
                                 tableColumnTeachers += teacher + ", ";
                                 teachersInDB.push(teacher);
                             }
@@ -273,11 +340,14 @@ chrome.storage.local.get(async (result) => {
 
         let table = document.querySelector("#table");
         table.innerHTML = "";
+
         let tr = document.createElement("tr");
         let th = document.createElement("th");
+
         th.innerText = "Bukowska";
         tr.appendChild(th);
         table.appendChild(tr);
+
         th.innerText = "Godzina";
         tr.appendChild(th);
 
@@ -286,33 +356,43 @@ chrome.storage.local.get(async (result) => {
             th.innerText = days[i];
             tr.appendChild(th);
         }
+
         table.appendChild(tr);
+
         times.forEach(time => {
             let tr = document.createElement("tr");
             let td = document.createElement("td");
+
             td.style = "text-align: end;";
             td.innerText = time;
             tr.appendChild(td);
+
             let text, teacher;
             let createRow = true;
             let j = times.indexOf(time);
+
             for(let i = 0; i < 5; i++){
                 let tableColumnClasses = "";
                 let tableColumnTeachers = "";
+
                 if(bukoJSON[j] == null){
                     createRow = false;
                     break;
                 }
+
                 let teachersInDB = [];
                 let classesInDB = [];
+
                 for(let k = 0; k<Object.keys(bukoJSON[j]).length;++k){
                     if(parseInt(bukoJSON[j][k]["day"]) == parseInt(i)){
                         text = classes[parseInt(bukoJSON[j][k]["class"])];
                         teacher = bukoJSON[j][k]["teacher"];
+
                         if(text != null && teacher != null){
                             if(!teachersInDB.includes(teacher) && !classesInDB.includes(text)){
                                 tableColumnClasses += text + ", ";
                                 classesInDB.push(text);
+
                                 tableColumnTeachers += teacher + ", ";
                                 teachersInDB.push(teacher);
                             }
@@ -350,11 +430,14 @@ chrome.storage.local.get(async (result) => {
 
         let table = document.querySelector("#table");
         table.innerHTML = "";
+
         let tr = document.createElement("tr");
         let th = document.createElement("th");
+
         th.innerText = "Bukowska";
         tr.appendChild(th);
         table.appendChild(tr);
+
         th.innerText = "Godzina";
         tr.appendChild(th);
 
@@ -363,23 +446,30 @@ chrome.storage.local.get(async (result) => {
             th.innerText = days[i];
             tr.appendChild(th);
         }
+
         table.appendChild(tr);
+
         times.forEach(time => {
             let tr = document.createElement("tr");
             let td = document.createElement("td");
+
             td.style = "text-align: end;";
             td.innerText = time;
             tr.appendChild(td);
+
             let text, teacher;
             let createRow = true;
             let j = times.indexOf(time);
+
             for(let i = 0; i < 5; i++){
                 let tableColumnClasses = "";
                 let tableColumnTeachers = "";
+
                 if(inneJSON[j] == null){
                     createRow = false;
                     break;
                 }
+
                 let teachersInDB = [];
                 let classesInDB = [];
                 for(let k = 0; k<Object.keys(inneJSON[j]).length;++k){
@@ -387,14 +477,17 @@ chrome.storage.local.get(async (result) => {
                         text = classes[parseInt(inneJSON[j][k]["class"])];
                         teacher = inneJSON[j][k]["teacher"];
                         sala = inneJSON[j][k]["sala"];
+
                         if(text != null && teacher != null){
                             if(!teachersInDB.includes(teacher) && !classesInDB.includes(text)){
                                 console.log(text, teacher, sala);
                                 tableColumnClasses += text + ", ";
                                 classesInDB.push(text);
+
                                 tableColumnTeachers += teacher;
                                 tableColumnTeachers += sala!=null?"-"+sala:"" ;
                                 tableColumnTeachers += ", ";
+
                                 teachersInDB.push(teacher);
                             }
                             else{
@@ -402,6 +495,7 @@ chrome.storage.local.get(async (result) => {
                                     tableColumnTeachers += teacher;
                                     tableColumnTeachers += sala!=null?"-"+sala:"" ;
                                     tableColumnTeachers += ", ";
+                                    
                                     teachersInDB.push(teacher);
                                 }
                                 else{
