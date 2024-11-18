@@ -22,9 +22,6 @@
             overflow-y: auto;
             flex-wrap: wrap;
         }
-        input, select{
-            background-color: white;
-        }
         header{
             height: 15vh;
             width: 100%;
@@ -42,6 +39,9 @@
         header>div:first-child{
             font-size: 3em;
             font-weight: bold;
+            height: 50%;
+            display: flex;
+            align-items: center;
         }
         header>div>div{
             display: flex;
@@ -73,6 +73,7 @@
             font-size: 100%;
             font-weight: bold;
         }
+
         section{
             background-color: rgb(37, 37, 37);
             height: auto;
@@ -84,16 +85,28 @@
             overflow-y: auto;
             color: white;
         }
-        input{
-            border: 2px solid black;
+
+        input, select{
+            background-color: white;
+            border-radius: 10px;
+            border: 0;
+            text-align: center;
         }
-        input:selected{
-            border: 2px solid black;
+        select{
+            margin-top: 10px;
         }
+
         #row{
             display: flex;
             align-items: center;
+            height: 50%;
         }
+        #row>div{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
         td>p{
             margin: 5px;
             text-align: center;
@@ -102,6 +115,7 @@
             width: 50%;
             margin: auto;
         }
+
         option{
             color: white;
         }

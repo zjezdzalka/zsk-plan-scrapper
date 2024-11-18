@@ -17,18 +17,29 @@ chrome.storage.local.get(async (result) => {
 
     const nauczyciel = document.querySelector("#nauczyciel");
     const sale = document.querySelector("#sale");
+
+    let listaNauczycieli = [];
+
     Object.keys(JSONTeacherData).forEach(element => {
+        listaNauczycieli.push(element);
+    });
+
+    listaNauczycieli.sort();
+
+    listaNauczycieli.forEach(element=>{
         let option = document.createElement("option");
         option.text = element;
         option.value = element;
         document.querySelector("#nauczyciel").add(option);
     });
+
     Object.keys(JSONRoomData).forEach(element => {
         let option = document.createElement("option");
         option.text = element;
         option.value = element;
         document.querySelector("#sale").add(option);
     });
+
     Object.values(classNamesJSON).forEach(element => {
         classes.push(element[0] + element[1]);
         let option = document.createElement("option");
@@ -44,7 +55,7 @@ chrome.storage.local.get(async (result) => {
     nauczyciel.addEventListener("change", function(){
         sale.style.boxShadow = "0 0 0 0";
         classesElement.style.boxShadow = "0 0 0 0";
-        nauczyciel.style.boxShadow = "0 0 25px white";
+        nauczyciel.style.boxShadow = "0 0 5px white";
 
         let value = nauczyciel.value;
         let table = document.querySelector("#table");
@@ -104,7 +115,7 @@ chrome.storage.local.get(async (result) => {
     sale.addEventListener("change", function(){
         classesElement.style.boxShadow = "0 0 0 0";
         nauczyciel.style.boxShadow = "0 0 0 0";
-        sale.style.boxShadow = "0 0 25px white";
+        sale.style.boxShadow = "0 0 5px white";
 
         let value = sale.value;
 
@@ -172,7 +183,7 @@ chrome.storage.local.get(async (result) => {
     classesElement.addEventListener("change", function(){
         sale.style.boxShadow = "0 0 0 0";
         nauczyciel.style.boxShadow = "0 0 0 0";
-        classesElement.style.boxShadow = "0 0 25px white";
+        classesElement.style.boxShadow = "0 0 5px white";
 
         let value = classes.indexOf(classesElement.value);
 
